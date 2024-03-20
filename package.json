@@ -9,6 +9,6 @@
      "@aptos-labs/ts-sdk": "^1.10.0"
   },
   "scripts": {
-    "start": "node updateRoomScript.js"
+    "start": "node index.js"
   }
 }
