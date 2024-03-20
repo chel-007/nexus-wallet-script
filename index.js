@@ -39,9 +39,9 @@ const UpdateRoom = () => {
   };
 
   // Run the function repeatedly at an interval
-  setInterval(() => {
-    handleUpdateRoom();
-  }, 20000); // 10 seconds interval
+  // setInterval(() => {
+  //   handleUpdateRoom();
+  // }, 20000); // 10 seconds interval
 };
 
 UpdateRoom();
