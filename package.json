@@ -6,8 +6,9 @@
   "author": "alphasec",
   "license": "MIT",
    "dependencies": {
+     "@aptos-labs/ts-sdk": "^1.10.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node updateRoomScript.js"
   }
 }
