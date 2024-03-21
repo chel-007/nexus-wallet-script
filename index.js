@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 
@@ -113,6 +113,6 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
   });
 
   app.listen(port, () => {
-    console.log(`UpdateRoom server listening at http://localhost:${port}`);
+    console.log(`App listening on port: ${port}`);
   });
   
