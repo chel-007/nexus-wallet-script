@@ -10,7 +10,7 @@ const roomTimestamps = {};
 
 const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
 
-  const roomIds = [7, 8, 9, 10, 11, 12];
+  const roomIds = [11, 12, 13, 14, 15];
 
   const checkRoomStatus = async (roomId) => {
     const config = new AptosConfig({ network: Network.RANDOMNET });
@@ -104,8 +104,8 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     }
   };
 
-  // updateRooms();
-  // setInterval(updateRooms, 30000);
+  updateRooms();
+  setInterval(updateRooms, 30000);
 
   app.get('/roomTimestamp/:roomId', (req, res) => {
     const { roomId } = req.params;
