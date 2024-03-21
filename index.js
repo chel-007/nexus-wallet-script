@@ -29,9 +29,9 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
 
         console.log(`This is the room for room ${roomId}`, room)
 
-        setTimeout(() => {
-          handleUpdateRoom(roomId);
-        }, 3000 * roomId);
+        // setTimeout(() => {
+        //   handleUpdateRoom(roomId);
+        // }, 3000 * roomId);
 
       } else {
         console.log(`Room ${roomId} is not active or doesn't have enough players.`);
@@ -93,9 +93,12 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
   
   const updateRooms = async () => {
     try {
-      const checkRoomStatusPromises = roomIds.map(roomId => checkRoomStatus(roomId));
-      await Promise.all(checkRoomStatusPromises);
-      console.log("All room statuses checked.");
+      for (const roomId of roomIds) {
+        await checkRoomStatus(roomId);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 seconds delay
+        await handleUpdateRoom(roomId);
+      }
+      console.log("All rooms updated.");
     } catch (error) {
       console.error("Error updating rooms:", error);
     }
