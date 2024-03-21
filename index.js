@@ -101,8 +101,8 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     }
   };
 
-  updateRooms();
-  // setInterval(updateRooms, 30000);
+  // updateRooms();
+  setInterval(updateRooms, 30000);
 
   app.get('/roomTimestamp/:roomId', (req, res) => {
     const { roomId } = req.params;
