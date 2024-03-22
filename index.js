@@ -19,7 +19,7 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     try {
       const checkRoomResponse = await aptosClient.view({
         payload: {
-          function: `${'0x60e5a00ffd3cf1ba4323bfa8f5ddbe1dea2c8f817607a5f89a32b28e5f16d37e'}::dapp::get_room`,
+          function: `${'0x0d17fdba4bd420569cb5b7a086a2d4b7e4a5857c89b846c6e795dd5b0fd4c217'}::dapp::get_room`,
           functionArguments: [roomId.toString()],
         },
       });
@@ -61,7 +61,7 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     const transaction = await aptosClient.transaction.build.simple({
         sender: '0x70a5294493afd96cca25b3b139e62280c9c98c70a8e8e71fe1594a2a64d2b444',
         data: {
-          function: `${'0x60e5a00ffd3cf1ba4323bfa8f5ddbe1dea2c8f817607a5f89a32b28e5f16d37e'}::dapp::update_room`,
+          function: `${'0x0d17fdba4bd420569cb5b7a086a2d4b7e4a5857c89b846c6e795dd5b0fd4c217'}::dapp::update_room`,
           typeArguments: [],
           functionArguments: [roomId.toString()],
         },
