@@ -29,9 +29,9 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
 
         console.log(`This is the room for room ${roomId}`, room)
 
-        // setTimeout(() => {
-        //   handleUpdateRoom(roomId);
-        // }, 3000 * roomId);
+        setTimeout(() => {
+          handleUpdateRoom(roomId);
+        }, 2000 * roomId);
 
       } else {
         console.log(`Room ${roomId} is not active or doesn't have enough players.`);
@@ -58,6 +58,9 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     const privateKey = new Ed25519PrivateKey("0xf1f2b0d537cb8de1f89603ebc7cd35ef4811b6aa5d181fdfdb062d523f771f4d");
     const address = AccountAddress.from("0x70a5294493afd96cca25b3b139e62280c9c98c70a8e8e71fe1594a2a64d2b444");
     const account = Account.fromPrivateKey({ privateKey, address });
+    const max_gas_amount = 100
+    const gas_unit_price = 50
+
     const transaction = await aptosClient.transaction.build.simple({
         sender: '0x70a5294493afd96cca25b3b139e62280c9c98c70a8e8e71fe1594a2a64d2b444',
         data: {
@@ -65,6 +68,10 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
           typeArguments: [],
           functionArguments: [roomId.toString()],
         },
+        options: {
+          maxGasAmount: max_gas_amount,
+          gasUnitPrice: gas_unit_price
+        }
       });
   
       try {
@@ -95,8 +102,8 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     try {
       for (const roomId of roomIds) {
         await checkRoomStatus(roomId);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 seconds delay
-        await handleUpdateRoom(roomId);
+        //await new Promise(resolve => setTimeout(resolve, 2000));
+        //await handleUpdateRoom(roomId);
       }
       console.log("All rooms updated.");
     } catch (error) {
