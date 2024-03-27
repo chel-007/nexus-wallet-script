@@ -10,7 +10,7 @@ const roomTimestamps = {};
 
 const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
 
-  const roomIds = [1, 2, 3, 4, 5, 6, 7];
+  const roomIds = [2, 3, 4, 5, 6, 7];
 
   const checkRoomStatus = async (roomId) => {
     const config = new AptosConfig({ network: Network.RANDOMNET });
@@ -58,7 +58,7 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
     const privateKey = new Ed25519PrivateKey("0xf1f2b0d537cb8de1f89603ebc7cd35ef4811b6aa5d181fdfdb062d523f771f4d");
     const address = AccountAddress.from("0x70a5294493afd96cca25b3b139e62280c9c98c70a8e8e71fe1594a2a64d2b444");
     const account = Account.fromPrivateKey({ privateKey, address });
-    const max_gas_amount = 35000
+    const max_gas_amount = 60000
     const gas_unit_price = 100
 
     const transaction = await aptosClient.transaction.build.simple({
