@@ -25,7 +25,7 @@ const { Aptos, Account, AccountAddress, AptosConfig, Network, Ed25519PrivateKey 
       });
   
       const room = checkRoomResponse[0];
-      if (room && typeof room === 'object' && room.players_list && Array.isArray(room.players_list) && room.players_list.length >= 5) {
+      if (room && typeof room === 'object' && room.players_list && Array.isArray(room.players_list) && room.players_list.length >= 2 && room.items_list && Array.isArray(room.items_list) && room.items_list.length < 30) {
 
         console.log(`This is the room for room ${roomId}`, room)
 
