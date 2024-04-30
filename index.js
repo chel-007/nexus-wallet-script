@@ -33,7 +33,6 @@ console.log("started")
 
 app.use(cors({ origin: '*' }));
 
-
 username = {}
 
 // #Step 1 - Create a new user
