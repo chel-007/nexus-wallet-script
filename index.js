@@ -17,7 +17,7 @@ const client = initiateUserControlledWalletsClient({
 
 const baseUrl = 'https://api.circle.com/v1/w3s';
 
-console.log(API_KEY)
+console.log(process.env.API_KEY)
 console.log("started")
 
 app.use(cors());
