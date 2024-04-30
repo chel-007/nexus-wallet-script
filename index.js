@@ -347,12 +347,8 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
 });
 
 app.post('/notifications', async (req, res) => {
- 
-  try {
-    res.status(200).json({ response });
-  } catch (error) {
-    console.error('Error getting Users:', error);
-  }
+
+    console.log(res)
 });
 
 
