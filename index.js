@@ -346,6 +346,15 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
   }
 });
 
+app.get('/notifications', async (req, res) => {
+ 
+  try {
+    res.status(200).json({ response });
+  } catch (error) {
+    console.error('Error getting Users:', error);
+  }
+});
+
 
   app.listen(port, "0.0.0.0", () => {
     console.log(`App listening on port: ${port}`);
