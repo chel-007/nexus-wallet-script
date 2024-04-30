@@ -26,7 +26,7 @@ const baseUrl = 'https://api.circle.com/v1/w3s';
 console.log(process.env.API_KEY)
 console.log("started")
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 
 username = {}
 
