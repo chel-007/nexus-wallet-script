@@ -352,6 +352,7 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
   }
 });
 
+
 io.on('connection', (socket) => {
   console.log('Client connected');
 
@@ -373,12 +374,18 @@ io.on('connection', (socket) => {
     if (socket.connected) {
       // Emit the notification data to the connected client
       socket.emit('notification', notificationData);
-      notifications = [];
+      notifications = []
     }
 
     // Send a successful response back to Circle (usually a 200 status code)
     res.sendStatus(200);
   });
+
+  // Disconnect handling
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
 
 
   app.listen(port, "0.0.0.0", () => {
@@ -426,4 +433,3 @@ io.on('connection', (socket) => {
   //     createChallengeForSCAWalletCreation();
   //   }
   // )
-  
