@@ -357,6 +357,10 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
   }
 });
 
+io.on('error', (error) => {
+  console.error('WebSocket server error:', error);
+});
+
 
 io.on('connection', (socket) => {
   console.log('Client connected');
