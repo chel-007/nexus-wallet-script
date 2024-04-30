@@ -26,7 +26,14 @@ const baseUrl = 'https://api.circle.com/v1/w3s';
 console.log(process.env.API_KEY)
 console.log("started")
 
-app.use(cors({ origin: '*' }));
+app.use(cors((req, res, next) => {
+  const allowedOrigin = req.headers.origin;
+  if (allowedOrigin === 'https://nexus-wallet.netlify.app') {
+    res.header('Access-Control-Allow-Origin', allowedOrigin);
+  }
+  next();
+}));
+
 
 username = {}
 
