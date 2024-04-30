@@ -347,49 +347,49 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
 });
 
 
-  app.listen(port, () => {
+  app.listen(port, "0.0.0.0",, () => {
     console.log(`App listening on port: ${port}`);
   });
 
 
 
-  yargs
-  .scriptName("circle_server")
-  .usage("$0 <cmd> [args]")
+  // yargs
+  // .scriptName("circle_server")
+  // .usage("$0 <cmd> [args]")
 
-  .command(
-    "create-user",
-    "Create a new user",
-    () => {},
-    (argv) => {
-      createNewUser();
-    }
-  )
+  // .command(
+  //   "create-user",
+  //   "Create a new user",
+  //   () => {},
+  //   (argv) => {
+  //     createNewUser();
+  //   }
+  // )
 
-  .command(
-    "create-token",
-    "Create a session token",
-    () => {},
-    (argv) => {
-      createSessionToken();
-    }
-  )
+  // .command(
+  //   "create-token",
+  //   "Create a session token",
+  //   () => {},
+  //   (argv) => {
+  //     createSessionToken();
+  //   }
+  // )
 
-  .command(
-    "create-challenge-wallet",
-    "Create Challenge to Create Wallet",
-    () => {},
-    (argv) => {
-      createChallengeForWalletCreation();
-    }
-  )
+  // .command(
+  //   "create-challenge-wallet",
+  //   "Create Challenge to Create Wallet",
+  //   () => {},
+  //   (argv) => {
+  //     createChallengeForWalletCreation();
+  //   }
+  // )
 
-  .command(
-    "create-challenge-sca-wallet",
-    "Create Challenge to Create SCA Wallet",
-    () => {},
-    (argv) => {
-      createChallengeForSCAWalletCreation();
-    }
-  )
+  // .command(
+  //   "create-challenge-sca-wallet",
+  //   "Create Challenge to Create SCA Wallet",
+  //   () => {},
+  //   (argv) => {
+  //     createChallengeForSCAWalletCreation();
+  //   }
+  // )
   
