@@ -6,9 +6,12 @@
   "author": "alphasec",
   "license": "MIT",
    "dependencies": {
-     "@aptos-labs/ts-sdk": "^1.10.0",
-     "cors": "^2.8.5",
-     "express": "^4.19.0"
+    "@circle-fin/user-controlled-wallets": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.19.0",
+    "uuid": "^9.0.1",
+    "yargs": "^17.7.2"
   },
   "scripts": {
     "start": "node index.js"
