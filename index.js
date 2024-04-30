@@ -4,6 +4,9 @@ const cors = require('cors');
 const axios = require('axios');
 const port = process.env.PORT || 3001;
 
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
@@ -349,17 +352,45 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
   }
 });
 
-app.post('/notify', async (req, res) => {
-  // Process the notification payload from Circle
-  const notificationData = req.body;
-  console.log('Received notification:', notificationData);
+io.on('connection', (socket) => {
+  console.log('Client connected');
 
-  // Implement your logic to update your wallet based on the notification content
-  // ...
+  // Store notifications (replace with your data storage mechanism)
+  let notifications = [];
 
-  // Send a successful response back to Circle (usually a 200 status code)
-  res.sendStatus(200);
-});
+  // Route to handle subscription notifications (replace `/notify` with your desired path)
+  app.post('/notify', async (req, res) => {
+    const notificationData = req.body;
+    console.log('Received notification:', notificationData);
+
+    // Implement your logic to update your wallet based on the notification content
+    // ...
+
+    // Add notification to the list
+    notifications.push(notificationData);
+
+    // Check if any client is connected
+    if (socket.connected) {
+      // Emit the notification data to the connected client
+      socket.emit('notification', notificationData);
+      notifications = [];
+    }
+
+    // Send a successful response back to Circle (usually a 200 status code)
+    res.sendStatus(200);
+  });
+
+// app.post('/notify', async (req, res) => {
+//   // Process the notification payload from Circle
+//   const notificationData = req.body;
+//   console.log('Received notification:', notificationData);
+
+//   // Implement your logic to update your wallet based on the notification content
+//   // ...
+
+//   // Send a successful response back to Circle (usually a 200 status code)
+//   res.sendStatus(200);
+// });
 
 
   app.listen(port, "0.0.0.0", () => {
