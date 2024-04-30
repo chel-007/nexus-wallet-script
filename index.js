@@ -6,7 +6,6 @@ const port = process.env.PORT || 3001;
 
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-app.use(io);
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -389,7 +388,7 @@ io.on('connection', (socket) => {
 });
 
 
-  app.listen(port, "0.0.0.0", () => {
+  http.listen(port, "0.0.0.0", () => {
     console.log(`App listening on port: ${port}`);
   });
 
