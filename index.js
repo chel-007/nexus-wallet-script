@@ -346,7 +346,7 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
   }
 });
 
-app.post('/notifications', async (req, res) => {
+app.get('/notifications', async (req, res) => {
 
     console.log(res)
 });
