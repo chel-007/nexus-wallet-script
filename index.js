@@ -380,18 +380,6 @@ io.on('connection', (socket) => {
     res.sendStatus(200);
   });
 
-// app.post('/notify', async (req, res) => {
-//   // Process the notification payload from Circle
-//   const notificationData = req.body;
-//   console.log('Received notification:', notificationData);
-
-//   // Implement your logic to update your wallet based on the notification content
-//   // ...
-
-//   // Send a successful response back to Circle (usually a 200 status code)
-//   res.sendStatus(200);
-// });
-
 
   app.listen(port, "0.0.0.0", () => {
     console.log(`App listening on port: ${port}`);
