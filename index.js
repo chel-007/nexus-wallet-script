@@ -4,6 +4,9 @@ const cors = require('cors');
 const axios = require('axios');
 const port = process.env.PORT || 3001;
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 const yargs = require("yargs");
 const {
   initiateUserControlledWalletsClient,
@@ -346,9 +349,16 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
   }
 });
 
-app.get('/notifications', async (req, res) => {
+app.post('/notify', async (req, res) => {
+  // Process the notification payload from Circle
+  const notificationData = req.body;
+  console.log('Received notification:', notificationData);
 
-    console.log(res)
+  // Implement your logic to update your wallet based on the notification content
+  // ...
+
+  // Send a successful response back to Circle (usually a 200 status code)
+  res.sendStatus(200);
 });
 
 
