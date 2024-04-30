@@ -380,12 +380,11 @@ io.on('connection', (socket) => {
     notifications.push(notificationData);
 
     // Check if any client is connected
-    if (socket.connected) {
+    // if (socket.connected) {
       console.log("sent notification")
       // Emit the notification data to the connected client
       socket.emit('notification', notificationData);
-      notifications = []
-    }
+    //}
 
     // Send a successful response back to Circle (usually a 200 status code)
     res.sendStatus(200);
