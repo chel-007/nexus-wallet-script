@@ -28,6 +28,10 @@ const client = initiateUserControlledWalletsClient({
 
 const baseUrl = 'https://api.circle.com/v1/w3s';
 
+const contAddress = '0xd5c2933b8b6c84857e5881ee78218033893f3362';
+
+const devwalletId = '33b0c2bf-1156-5b21-95b3-a98fece399e3';
+
 console.log(process.env.API_KEY)
 console.log("started")
 
@@ -203,6 +207,62 @@ async function challengeRecoverAcc(userToken) {
   }
 }
 
+// Get Users NFTs
+async function getNFTs(walletId) {
+  try {
+    const response = await axios.get(`${baseUrl}/wallets/${walletId}/nfts`, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_KEY}`
+      }
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Error getting Nfts for this User:', error);
+    throw error;
+  }
+}
+
+
+// Function to Mint NFT to User Wallet Address
+async function mintNFT(walletAdd, URI) {
+  try {
+    const { v4: uuidv4 } = require('uuid'); // Assuming Node.js environment
+    const idempotencyKey = uuidv4();
+
+    const forge = require('node-forge')
+    const entitySecret = forge.util.hexToBytes('4e3fb8137e076af1a4467de1a64a3922927ba308daf25e736d5191a7804820c2')
+    const publicKey = forge.pki.publicKeyFromPem('-----BEGIN RSA PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtfoR/z++4IgAvZsLyS7k\n55dVIbYakLdIC8/I6szvPwvhkC5/5cDqpQXgwKqhpOBmu95eCPbUpOO7YL9+F8/9\n8Og0l+HSQXlHFYvlQv6LVmS1a760SREAyluZ3XKsUwFrv0c0vqSl10nTffume6Og\nMSJ/Zs4XtyMkenK/5BT1YcvxkJuvW2KupVELUZb3AT4n3xK/WRQ0Sbbr3S44ts7A\nOYsx3fyay4x0f3u8VrhBwWzfx/eUQgKOQYPLHiPvtITKEh0EDgKjI0IleZVtfZlL\nYkhUYGIFcEefF0UaiD5l/TDt/Os6xXCL6sCclK+8zeMGYQke4LUbRw5MRhoeH9pE\nBYb6GrITnUUhhYncWd2zg+dUm7Mjsjnz7rvYXNBx/Iq9m8Kcd2+dApnVbfrmJtlW\ntMm9asHElEBWrpJUGTZ76zjP8F2hJkmQI6chVR3D6FZ7RZvP4VGV7vVlEx1OFLp7\nPlfeHloQW/3ua3x5HFGD5aym00PDUmwnE6/yDmMi4hX8ncUxcwqzfrXXGAuElKF8\nmc+U/dKuRJRrWbP+Q53wRdKlriGrZArXiLIBbJv/LhoL3vkgwWqW+zjHooflcp+W\nmuTgy9UmepHJ5wK9TwH54v7BK2YTVh5hH3i4UJF/uHdBn8a9IgL07IDktkZ1FdZF\nHQHirufmKFESrerLpSdD3QcCAwEAAQ==\n-----END RSA PUBLIC KEY-----\n')
+    const encryptedData = publicKey.encrypt(entitySecret, 'RSA-OAEP', {
+      md: forge.md.sha256.create(),
+      mgf1: {
+        md: forge.md.sha256.create(),
+      },
+    })
+    const cipherText = forge.util.encode64(encryptedData)
+    const response = await axios.post(`${baseUrl}/developer/transactions/contractExecution`, {
+      abiParameters: [
+        `${walletAdd}`, `${URI}`
+      ],
+      abiFunctionSignature: `mintTo(address,string)`,
+      contractAddress: contAddress,
+      entitySecretCiphertext: cipherText,
+      feeLevel: "MEDIUM",
+      idempotencyKey: idempotencyKey,
+      refId: "<reference id>",
+      walletId: devwalletId
+    }, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_KEY}`
+      }
+    });
+    console.log(response)
+    return response.data?.data;
+  } catch (error) {
+    console.error('Error performing outbound transfer:', error);
+    throw error;
+  }
+}
+
 
 
 app.get('/createUser/:username', async (req, res) => {
@@ -356,6 +416,35 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
     }
   }
 });
+
+app.get('/getNFTs/:walletId', async (req, res) => {
+  const { walletId } = req.params;
+  try {
+    const response = await getNFTs(walletId);
+    // Send the wallets data back to the frontend
+    console.log(response)
+    res.status(200).json({ response });
+  } catch (error) {
+    console.error('Error getting User NFTs:', error);
+    res.status(500).json({ error: 'Error getting NFTs' });
+  }
+});
+
+app.get('/mintNFT/:walletAddress/:uri', async (req, res) => {
+  const { walletAddress, uri } = req.params;
+  console.log(walletAddress)
+  console.log(uri)
+  try {
+    const response = await mintNFT(walletAddress, uri);
+    // Send the wallets data back to the frontend
+    console.log(response)
+    res.status(200).json({ response });
+  } catch (error) {
+    console.error('Encountered Error while trying to MINT:', error);
+    res.status(500).json({ error: 'Encountered Error while trying to MINT NFT' });
+  }
+});
+
 
 io.on('error', (error) => {
   console.error('WebSocket server error:', error);
