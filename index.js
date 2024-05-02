@@ -454,18 +454,6 @@ let connectedClients = new Set();
 
 io.on('connection', (socket) => {
     connectedClients.add(socket.id);
-    // ... (rest of your connection logic)
-
-    socket.on('disconnect', () => {
-        connectedClients.delete(socket.id);
-    });
-});
-
-
-let connectedClients = new Set();
-
-io.on('connection', (socket) => {
-    connectedClients.add(socket.id);
     
     console.log('Client connected');
 
@@ -479,12 +467,14 @@ io.on('connection', (socket) => {
       // Add notification to the list
       notifications.push(notificationData);
   
-      // Check if any client is connected
       // if (socket.connected) {
         console.log("sent notification")
         // Emit the notification data to the connected client
-        socket.emit('notification', notificationData);
+        //socket.emit('notification', notificationData);
       //}
+      for (const clientId of connectedClients) {
+        socket.to(clientId).emit('notification', notificationData);
+       }
   
       // Send a successful response back to Circle (usually a 200 status code)
       res.sendStatus(200);
