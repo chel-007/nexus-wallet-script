@@ -450,39 +450,49 @@ io.on('error', (error) => {
   console.error('WebSocket server error:', error);
 });
 
+let connectedClients = new Set();
 
 io.on('connection', (socket) => {
-  console.log('Client connected');
+    connectedClients.add(socket.id);
+    // ... (rest of your connection logic)
 
-  // Store notifications (replace with your data storage mechanism)
-  let notifications = [];
+    socket.on('disconnect', () => {
+        connectedClients.delete(socket.id);
+    });
+});
 
-  // Route to handle subscription notifications (replace `/notify` with your desired path)
-  app.post('/notify', async (req, res) => {
-    const notificationData = req.body;
-    console.log('Received notification:', notificationData);
 
-    // Implement your logic to update your wallet based on the notification content
-    // ...
+let connectedClients = new Set();
 
-    // Add notification to the list
-    notifications.push(notificationData);
+io.on('connection', (socket) => {
+    connectedClients.add(socket.id);
+    
+    console.log('Client connected');
 
-    // Check if any client is connected
-    // if (socket.connected) {
-      console.log("sent notification")
-      // Emit the notification data to the connected client
-      socket.emit('notification', notificationData);
-    //}
+    // Store notifications
+    let notifications = [];
+  
+    app.post('/notify', async (req, res) => {
+      const notificationData = req.body;
+      console.log('Received notification:', notificationData);
+  
+      // Add notification to the list
+      notifications.push(notificationData);
+  
+      // Check if any client is connected
+      // if (socket.connected) {
+        console.log("sent notification")
+        // Emit the notification data to the connected client
+        socket.emit('notification', notificationData);
+      //}
+  
+      // Send a successful response back to Circle (usually a 200 status code)
+      res.sendStatus(200);
+    });
 
-    // Send a successful response back to Circle (usually a 200 status code)
-    res.sendStatus(200);
-  });
-
-  // Disconnect handling
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
+    socket.on('disconnect', () => {
+        connectedClients.delete(socket.id);
+    });
 });
 
 
