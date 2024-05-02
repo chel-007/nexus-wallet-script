@@ -49,7 +49,7 @@ async function createNewUser(username) {
     console.log(response);
     return response; // Return the response for the server to send back
   } catch (error) {
-    throw error; // Re-throw the error for the server to handle
+    throw error;
   }
 }
 
@@ -67,36 +67,63 @@ async function createSessionToken(username) {
   }
 }
 
+
+// #Step 1 - Create a new user
+async function initializeUser(userToken) {
+  try {
+    const { v4: uuidv4 } = require('uuid');
+    const idempotencyKey = uuidv4();
+    const response = await axios.post(`${baseUrl}/user/initialize`, {
+
+      blockchains: ["ETH-SEPOLIA"],
+      // accountType: ["EOA"],
+      idempotencyKey: idempotencyKey
+
+    }, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_KEY}`,
+        'X-User-Token': userToken
+      }
+    });
+
+    console.log(response);
+    return response; // Return the response for the server to send back
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createChallengeInitalize(existingUser, userToken){
+  try {
+      let response = await client.createUserPinWithWallets({
+      userId: existingUser,
+      blockchains: ["ETH-SEPOLIA"],
+      userToken: userToken,
+    });
+    console.log(response.data.data);
+    // return response.data.data;
+    return response
+  } catch (error) {
+  console.error('Error creating challenge:', error);
+  throw error;
+}
+}
+
 // #Step 3 - Create Challenge for Wallet Creation
-// async function createChallengeForWalletCreation(existingUser, userToken) {
-//   try {
-//     let response = await client.createUserPinWithWallets({
-//       userId: existingUser,
-//       blockchains: ["ETH-SEPOLIA"], // Assuming this is the fixed blockchain value
-//       userToken: userToken,
-//     });
-
-//     console.log(response.data?.challengeId);
-//     return response.data?.challengeId;
-//   } catch (error) {
-//     console.error('Error creating challenge:', error);
-//     throw error;
-//   }
-// }
-
 async function createChallengeForWalletCreation(existingUser, userToken) {
   try {
     const { v4: uuidv4 } = require('uuid');
     const idempotencyKey = uuidv4();
-    const response = await axios.get(`${baseUrl}/users/wallets`, {
+    const response = await axios.post(`${baseUrl}/user/wallets`, {
 
       blockchains: ["ETH-SEPOLIA"],
-      metadata: [
-          {
-            name: existingUser,
-            refId: "wallet123"
-          }
-        ],
+      // accountType: ["EOA"],
+      // metadata: [
+      //     {
+      //       name: existingUser,
+      //       refId: "<reference id>"
+      //     }
+      //   ],
       idempotencyKey: idempotencyKey
 
     }, {
@@ -112,8 +139,8 @@ async function createChallengeForWalletCreation(existingUser, userToken) {
     //   userToken: userToken,
     // });
 
-    console.log(response.data?.challengeId);
-    return response.data?.challengeId;
+    console.log(response.data.data);
+    return response.data.data;
   } catch (error) {
     console.error('Error creating challenge:', error);
     throw error;
@@ -124,15 +151,32 @@ async function createChallengeForWalletCreation(existingUser, userToken) {
 // #Step 4 - Create Challenge for SCA Wallet Creation
 async function createChallengeForSCAWalletCreation(existingUser, userToken) {
   try {
-    let response = await client.createUserPinWithWallets({
-      userId: existingUser,
-      blockchains: ["ETH-SEPOLIA"], // Assuming this is the fixed blockchain value
+
+    const { v4: uuidv4 } = require('uuid');
+    const idempotencyKey = uuidv4();
+    const response = await axios.post(`${baseUrl}/user/wallets`, {
+
+      blockchains: ["ETH-SEPOLIA"],
       accountType: 'SCA',
-      userToken: userToken,
+      idempotencyKey: idempotencyKey
+
+    }, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_KEY}`,
+        'X-User-Token': userToken
+      }
     });
 
-    console.log(response.data?.challengeId);
-    return response.data?.challengeId;
+
+    // let response = await client.createUserPinWithWallets({
+    //   userId: existingUser,
+    //   blockchains: ["ETH-SEPOLIA"],
+    //   accountType: 'SCA',
+    //   userToken: userToken,
+    // });
+    
+    console.log(response.data.data);
+    return response.data.data;
   } catch (error) {
     console.error('Error creating challenge:', error);
     throw error;
@@ -146,7 +190,7 @@ async function getUserWalletID(userToken) {
     const response = await axios.get(`${baseUrl}/wallets`, {
       headers: {
         Authorization: `Bearer ${process.env.API_KEY}`,
-        'X-User-Token': userToken // Include X-User-Token with userToken value
+        'X-User-Token': userToken
       }
     });
     return response.data;
@@ -167,16 +211,16 @@ async function getWalletBalances(walletId, userToken) {
     });
     return response.data.data;
   } catch (error) {
-    console.error('Error getting user wallet ID:', error);
+    console.error('Error getting user token Balances:', error);
     throw error;
   }
 }
 
-// Function to get create challenge for Token Transfer
+// Function to Create Challenge for Token Transfer
 async function outboundTransfer(userToken, amount, walletId, recipientAdd, tokenId) {
   try {
 
-    const { v4: uuidv4 } = require('uuid'); // Assuming Node.js environment
+    const { v4: uuidv4 } = require('uuid');
     const idempotencyKey = uuidv4();
 
     const response = await axios.post(`${baseUrl}/user/transactions/transfer`, {
@@ -199,7 +243,7 @@ async function outboundTransfer(userToken, amount, walletId, recipientAdd, token
     console.log(response)
     return response.data?.data;
   } catch (error) {
-    console.error('Error performing outbound transfer:', error);
+    console.error('Error Performing Outbound Transfer:', error);
     throw error;
   }
 }
@@ -223,7 +267,7 @@ async function getUsers(userToken) {
 async function challengeRecoverAcc(userToken) {
   try {
 
-    const { v4: uuidv4 } = require('uuid'); // Assuming Node.js environment
+    const { v4: uuidv4 } = require('uuid');
     const idempotencyKey = uuidv4();
 
     const response = await axios.post(`${baseUrl}/user/pin/restore`, {
@@ -238,7 +282,7 @@ async function challengeRecoverAcc(userToken) {
     });
     return response.data.data;
   } catch (error) {
-    console.error('Error getting users for Nexus Wallet:', error);
+    console.error('Error Initiating Wallet Recovery:', error);
     throw error;
   }
 }
@@ -253,7 +297,7 @@ async function getNFTs(walletId) {
     });
     return response.data.data;
   } catch (error) {
-    console.error('Error getting Nfts for this User:', error);
+    console.error('Error getting NFTs for this User:', error);
     throw error;
   }
 }
@@ -294,7 +338,7 @@ async function mintNFT(walletAdd, URI) {
     console.log(response)
     return response.data?.data;
   } catch (error) {
-    console.error('Error performing outbound transfer:', error);
+    console.error('Error Initiating NFTs Minting:', error);
     throw error;
   }
 }
@@ -303,13 +347,47 @@ async function mintNFT(walletAdd, URI) {
 
 app.get('/createUser/:username', async (req, res) => {
   const { username } = req.params;
-  // Retrieve the timestamp for the specified roomId from roomTimestamps object
+  
+//   firstResponse = await getUsers()
+//   console.log(firstResponse)
+//   const usernameToCheck = username;
+
+// if (firstResponse.data && firstResponse.data.users) {
+//   const userExists = responseData.data.users.some(
+//     (user) => user.id === usernameToCheck
+//   );
+
+//   if (userExists) {
+//     console.log("Username", usernameToCheck, "exists in the list!");
+//   } else {
+//     console.log("Username", usernameToCheck, "does not exist in the list.");
+//   }
+// } else {
+//   console.error("Error: Invalid response data format.");
+// }
+
   try {
     const response = await createNewUser(username);
+    const newToken = await createSessionToken(username);
+
+    console.log(newToken.data.userToken)
+    const { userToken, encryptionKey } = newToken.data;
+
+    console.log('Hey', userToken)
+
+    const initialize = await createChallengeInitalize(username, userToken)
+
+    const { challengeId } = initialize.data
+
+    console.log(initialize)
+
     const userData = {
-      status: response.status, // Assuming userId is a property in the response
+      status: response.status,
       statusText: response.statusText,
-      message: 'User created successfully!'
+      message: 'User created successfully!. Start to Initialize by Clicking the Create Wallet Button Below',
+      userToken: userToken,
+      encryptionKey: encryptionKey,
+      challengeId: challengeId
     };
     res.status(201).json({ data: userData });
   } catch (error) {
@@ -401,8 +479,8 @@ app.get('/getTokenBalances/:walletId/:userToken', async (req, res) => {
     // Send the wallets data back to the frontend
     res.status(200).json(walletsData);
   } catch (error) {
-    console.error('Error getting user wallet ID:', error);
-    res.status(500).json({ error: 'Error getting user wallet ID' });
+    console.error('Error getting user token Balances:', error);
+    res.status(500).json({ error: 'Error getting user token Balances' });
   }
 });
 
@@ -447,7 +525,6 @@ app.get('/recoverAcc/:userToken', async (req, res) => {
       errorMessage = 'Internal Server Error';
       res.status(500).json({ message: errorMessage });
     } else {
-      errorMessage = error.response.data.message || 'Existing user already created with the provided userId';
       res.status(401).json({ error: 'Malformed authorization. Is the authorization type missing' });
     }
   }
@@ -480,7 +557,6 @@ app.get('/mintNFT/:walletAddress/:uri', async (req, res) => {
     res.status(500).json({ error: 'Encountered Error while trying to MINT NFT' });
   }
 });
-
 
 io.on('error', (error) => {
   console.error('WebSocket server error:', error);
@@ -535,6 +611,7 @@ io.on('connection', (socket) => {
 process.on('exit', () => {
     connectedClients.clear();
 });
+
 
   http.listen(port, "0.0.0.0", () => {
     console.log(`App listening on port: ${port}`);
