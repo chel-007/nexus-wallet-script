@@ -494,6 +494,9 @@ io.on('connection', (socket) => {
     });
 });
 
+process.on('exit', () => {
+    connectedClients.clear();
+});
 
   http.listen(port, "0.0.0.0", () => {
     console.log(`App listening on port: ${port}`);
