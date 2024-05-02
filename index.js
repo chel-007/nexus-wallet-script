@@ -68,13 +68,49 @@ async function createSessionToken(username) {
 }
 
 // #Step 3 - Create Challenge for Wallet Creation
+// async function createChallengeForWalletCreation(existingUser, userToken) {
+//   try {
+//     let response = await client.createUserPinWithWallets({
+//       userId: existingUser,
+//       blockchains: ["ETH-SEPOLIA"], // Assuming this is the fixed blockchain value
+//       userToken: userToken,
+//     });
+
+//     console.log(response.data?.challengeId);
+//     return response.data?.challengeId;
+//   } catch (error) {
+//     console.error('Error creating challenge:', error);
+//     throw error;
+//   }
+// }
+
 async function createChallengeForWalletCreation(existingUser, userToken) {
   try {
-    let response = await client.createUserPinWithWallets({
-      userId: existingUser,
-      blockchains: ["ETH-SEPOLIA"], // Assuming this is the fixed blockchain value
-      userToken: userToken,
+    const { v4: uuidv4 } = require('uuid');
+    const idempotencyKey = uuidv4();
+    const response = await axios.get(`${baseUrl}/users/wallets`, {
+
+      blockchains: ["ETH-SEPOLIA"],
+      metadata: [
+          {
+            name: existingUser,
+            refId: "wallet123"
+          }
+        ],
+      idempotencyKey: idempotencyKey
+
+    }, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_KEY}`,
+        'X-User-Token': userToken
+      }
     });
+
+    // let response = await client.createUserPinWithWallets({
+    //   userId: existingUser,
+    //   blockchains: ["ETH-SEPOLIA"],
+    //   userToken: userToken,
+    // });
 
     console.log(response.data?.challengeId);
     return response.data?.challengeId;
