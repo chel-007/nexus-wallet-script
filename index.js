@@ -452,6 +452,8 @@ io.on('error', (error) => {
 
 let connectedClients = new Set();
 
+connectedClients.clear();
+
 io.on('connection', (socket) => {
     connectedClients.add(socket.id);
     
