@@ -463,18 +463,27 @@ io.on('connection', (socket) => {
     app.post('/notify', async (req, res) => {
       const notificationData = req.body;
       console.log('Received notification:', notificationData);
+
+      for (const clientId of connectedClients) {
+        const clientSocket = io.sockets.sockets.get(clientId); // Get socket object by ID
+        if (clientSocket) {
+          console.log("Sent notification to client:", clientId);
+          clientSocket.emit('notification', notificationData); // Emit directly to the socket
+        } else {
+          console.warn("Client disconnected:", clientId); // Handle missing socket (optional)
+        }
+      }
   
       // Add notification to the list
-      notifications.push(notificationData);
-  
+     // notifications.push(notificationData);
+      //console.log("sent notification")
       // if (socket.connected) {
-        console.log("sent notification")
         // Emit the notification data to the connected client
         //socket.emit('notification', notificationData);
       //}
-      for (const clientId of connectedClients) {
-        socket.to(clientId).emit('notification', notificationData);
-       }
+      // for (const clientId of connectedClients) {
+      //   socket.to(clientId).emit('notification', notificationData);
+      //  }
   
       // Send a successful response back to Circle (usually a 200 status code)
       res.sendStatus(200);
